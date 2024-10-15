@@ -1,4 +1,4 @@
-
+! pip install streamlit
 # Import necessary libraries
 import pandas as pd
 import seaborn as sns
