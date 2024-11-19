@@ -1,66 +1,17 @@
-import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 
-# Title of the app
-st.title("CSV Data Visualization App")
+# Define your data
+data = {
+    "95% Confidence Interval, Lower Limit": [15.30, 17.10, 17.00, 17.20],
+    "95% Confidence Interval, Upper Limit": [17.70, 20.10, 19.10, 19.20],
+    "Number of Responses": [1434, 1154, 1578, 1563],
+    "Total Number of Survey Respondents": [8715, 6897, 9282, 8674],
+}
 
-# File uploader for CSV
-uploaded_file = st.file_uploader("ratings.csv", type=["csv"])
+# Create a DataFrame
+df = pd.DataFrame(data)
 
-if uploaded_file is not None:
-    # Read the CSV file
-    data = pd.read_csv(uploaded_file)
-    st.write("### Data Preview")
-    st.dataframe(data)
+# Save as CSV
+df.to_csv("survey_data.csv", index=False)
 
-    # Dropdown for selecting columns
-    columns = data.columns.tolist()
-    x_column = st.selectbox("Select X-axis column", columns)
-    y_column = st.selectbox("Select Y-axis column", columns)
-
-    # Dropdown for graph type
-    graph_type = st.selectbox(
-        "Select Graph Type",
-        ["Line", "Scatter", "Bar", "Pie"]
-    )
-
-    # Plot button
-    if st.button("Plot Graph"):
-        fig, ax = plt.subplots()
-
-        if graph_type == "Line":
-            ax.plot(data[x_column], data[y_column], marker='o')
-            ax.set_title(f"{y_column} vs {x_column} (Line Plot)")
-
-        elif graph_type == "Scatter":
-            ax.scatter(data[x_column], data[y_column])
-            ax.set_title(f"{y_column} vs {x_column} (Scatter Plot)")
-
-        elif graph_type == "Bar":
-            ax.bar(data[x_column], data[y_column])
-            ax.set_title(f"{y_column} vs {x_column} (Bar Chart)")
-
-        elif graph_type == "Pie":
-            # Pie chart only makes sense for single-column data
-            if len(data[x_column].unique()) <= 10:  # Limit to 10 unique categories for readability
-                plt.pie(
-                    data[y_column],
-                    labels=data[x_column],
-                    autopct='%1.1f%%',
-                    startangle=90,
-                )
-                plt.title(f"{y_column} (Pie Chart)")
-            else:
-                st.error("Pie chart requires fewer unique categories in the X-axis.")
-
-        if graph_type != "Pie":
-            ax.set_xlabel(x_column)
-            ax.set_ylabel(y_column)
-            st.pyplot(fig)
-        else:
-            st.pyplot(plt)
-
-    st.write("Tip: Ensure the selected columns are numeric for meaningful plots.")
-else:
-    st.info("Please upload a CSV file to get started.") 
+print("CSV file created successfully!")
